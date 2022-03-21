@@ -16,3 +16,8 @@ VALIDATION_PATH=os.path.join(DATA_DIR,VALIDATION)
 # training config
 EPOCHS = 30
 BATCH_SIZE=10
+LEARNING_RATE=0.0001
+
+#==============================================================================
+# dataLoader
+NUM_WORKERS=4

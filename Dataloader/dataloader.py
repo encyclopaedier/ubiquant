@@ -97,6 +97,6 @@ if __name__=="__main__":
     for i in range(len(librisample_test)):
         X,Y=librisample_test[i]
         train_items = LibriItems(X, Y )
-        train_loader = torch.utils.data.DataLoader(train_items, batch_size=BATCH_SIZE, shuffle=True)
+        train_loader = torch.utils.data.DataLoader(train_items, batch_size=BATCH_SIZE, shuffle=True)#num_workers=1
         for batch_idx, (data, target) in enumerate(train_loader):
             input()

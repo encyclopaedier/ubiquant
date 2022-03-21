@@ -1,48 +1,67 @@
 from config.config import *
-from Dataloader.
-for epoch in range(EPOCHS):
-    # Quality of life tip: leave=False and position=0 are needed to make tqdm usable in jupyter
-    batch_bar = tqdm(total=len(train_loader), dynamic_ncols=True, leave=False, position=0, desc='Train')
+from Dataloader.dataloader import *
+from tqdm import tqdm
+import torch.optim as optim
+class Train():
+    def __init__(self,model,optimizer,criterion,scaler,batch_size,path,epoch,num_workers):
+        self.model=model
+        self.optimizer=optimizer
+        self.criterion=criterion
+        self.scaler=scaler
+        self.batch_size=batch_size
+        self.path=path
+        self.epoch=epoch
+        self.num_workers=num_workers
+        self.init_device()
+        self.init_librisample()
 
-    num_correct = 0
-    total_loss = 0
+    def init_device(self):
+        self.device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.scheduler= optim.lr_scheduler.CosineAnnealingLR(self.optimizer, T_max=(len(train_loader) * self.epochs))
+    def init_librisample(self):
+        self.librisample = LibriSamples(self.path)
 
-    for i, (x, y) in enumerate(train_loader):
-        optimizer.zero_grad()
+    def train(self):
 
-        x = x.cuda()
-        y = y.cuda()
+        for epoch in range(self.epoch):
+            for i in range(len(self.librisample)):
+                X, Y = librisample_test[i]
+                train_items = LibriItems(X, Y)
+                train_loader = torch.utils.data.DataLoader(train_items, batch_size=self.batch_size,
+                                                           shuffle=True,num_workers=self.num_workers)  # num_workers=1
+                batch_bar = tqdm(total=len(train_loader), dynamic_ncols=True, leave=False, position=0, desc='Train')
+                total_loss = 0
 
-        # Don't be surprised - we just wrap these two lines to make it work for FP16
-        with torch.cuda.amp.autocast():
-            outputs = model(x)
-            loss = criterion(outputs, y)
+                for batch_idx, (data, target) in enumerate(train_loader):
+                    data = data.float().to(self.device)
+                    target = target.long().to(self.device)
 
-        # Update # correct & loss as we go
-        num_correct += int((torch.argmax(outputs, axis=1) == y).sum())
-        total_loss += float(loss)
+                    # Don't be surprised - we just wrap these two lines to make it work for FP16
+                    with torch.cuda.amp.autocast():
+                        outputs = self.model(data)
+                        loss = self.criterion(outputs, target)
 
-        # tqdm lets you add some details so you can monitor training as you train.
-        batch_bar.set_postfix(
-            acc="{:.04f}%".format(100 * num_correct / ((i + 1) * batch_size)),
-            loss="{:.04f}".format(float(total_loss / (i + 1))),
-            num_correct=num_correct,
-            lr="{:.04f}".format(float(optimizer.param_groups[0]['lr'])))
+                    self.optimizer.step()
+                    total_loss += float(loss)
+                    batch_bar.set_postfix(
+                        loss="{:.04f}".format(float(total_loss / (i + 1))),
+                        lr="{:.04f}".format(float(self.optimizer.param_groups[0]['lr'])))
+                    # Another couple things you need for FP16.
+                    self.scaler.scale(loss).backward()  # This is a replacement for loss.backward()
+                    self.scaler.step(self.optimizer)  # This is a replacement for optimizer.step()
+                    self.scaler.update()  # This is something added just for FP16
 
-        # Another couple things you need for FP16.
-        scaler.scale(loss).backward()  # This is a replacement for loss.backward()
-        scaler.step(optimizer)  # This is a replacement for optimizer.step()
-        scaler.update()  # This is something added just for FP16
+                    self.scheduler.step()  # We told scheduler T_max that we'd call step() (len(train_loader) * epochs) many times.
 
-        scheduler.step()  # We told scheduler T_max that we'd call step() (len(train_loader) * epochs) many times.
+                    batch_bar.update()  # Update tqdm bar
 
-        batch_bar.update()  # Update tqdm bar
+            # You can add validation per-epoch here if you would like
 
-    # You can add validation per-epoch here if you would like
+            print("Epoch {}/{}: Train Acc {:.04f}%, Train Loss {:.04f}, Learning Rate {:.04f}".format(
+                epoch + 1,
+                self.epoch,
+                float(total_loss / len(train_loader)),
+                float(self.optimizer.param_groups[0]['lr'])))
 
-    print("Epoch {}/{}: Train Acc {:.04f}%, Train Loss {:.04f}, Learning Rate {:.04f}".format(
-        epoch + 1,
-        epochs,
-        100 * num_correct / (len(train_loader) * batch_size),
-        float(total_loss / len(train_loader)),
-        float(optimizer.param_groups[0]['lr'])))
+if __name__=="__main__":
+    train=Train()
