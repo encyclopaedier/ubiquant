@@ -10,27 +10,30 @@ class Train():
         self.scaler=scaler
         self.batch_size=batch_size
         self.path=path
-        self.epoch=epoch
+        self.epochs=epoch
         self.num_workers=num_workers
         self.init_device()
         self.init_librisample()
 
     def init_device(self):
         self.device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.scheduler= optim.lr_scheduler.CosineAnnealingLR(self.optimizer, T_max=(len(train_loader) * self.epochs))
     def init_librisample(self):
         self.librisample = LibriSamples(self.path)
 
     def train(self):
 
-        for epoch in range(self.epoch):
+        for epoch in range(self.epochs):
+            total_loss = 0
+            total_length = 1
             for i in range(len(self.librisample)):
-                X, Y = librisample_test[i]
+                X, Y = self.librisample[i]
                 train_items = LibriItems(X, Y)
                 train_loader = torch.utils.data.DataLoader(train_items, batch_size=self.batch_size,
                                                            shuffle=True,num_workers=self.num_workers)  # num_workers=1
+                self.scheduler = optim.lr_scheduler.CosineAnnealingLR(self.optimizer,
+                                                                      T_max=(len(train_loader) * self.epochs))
+                total_length+=len(train_loader)
                 batch_bar = tqdm(total=len(train_loader), dynamic_ncols=True, leave=False, position=0, desc='Train')
-                total_loss = 0
 
                 for batch_idx, (data, target) in enumerate(train_loader):
                     data = data.float().to(self.device)
@@ -57,10 +60,10 @@ class Train():
 
             # You can add validation per-epoch here if you would like
 
-            print("Epoch {}/{}: Train Acc {:.04f}%, Train Loss {:.04f}, Learning Rate {:.04f}".format(
+            print("Epoch {}/{}: Train Loss {:.04f}, Learning Rate {:.04f}".format(
                 epoch + 1,
-                self.epoch,
-                float(total_loss / len(train_loader)),
+                self.epochs,
+                float(total_loss / total_length),
                 float(self.optimizer.param_groups[0]['lr'])))
 
 if __name__=="__main__":

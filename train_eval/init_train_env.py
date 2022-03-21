@@ -2,6 +2,7 @@ from Model import *
 from config.config import *
 import torch.optim as optim
 import torch
+from Model.Models import *
 
 def init_training_env():
     model=Model()
