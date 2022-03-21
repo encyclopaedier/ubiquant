@@ -4,5 +4,7 @@ def run():
     train=Train(*init_training_env())
     train.train()
 
-if __name__=="__main__":
-    run()
+# if __name__=="__main__":
+#     run()
+
+run()
