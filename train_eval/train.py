@@ -5,6 +5,7 @@ import torch.optim as optim
 class Train():
     def __init__(self,model,optimizer,criterion,scaler,batch_size,path,epoch,num_workers):
         self.model=model
+        self.model.cuda()
         self.optimizer=optimizer
         self.criterion=criterion
         self.scaler=scaler
@@ -24,21 +25,23 @@ class Train():
 
         for epoch in range(self.epochs):
             total_loss = 0
-            total_length = 1
+            total_length = 0
             for i in range(len(self.librisample)):
                 X, Y = self.librisample[i]
                 train_items = LibriItems(X, Y)
                 train_loader = torch.utils.data.DataLoader(train_items, batch_size=self.batch_size,
-                                                           shuffle=True,num_workers=self.num_workers)  # num_workers=1
+                                                           shuffle=True)  # num_workers=1
                 self.scheduler = optim.lr_scheduler.CosineAnnealingLR(self.optimizer,
                                                                       T_max=(len(train_loader) * self.epochs))
                 total_length+=len(train_loader)
                 batch_bar = tqdm(total=len(train_loader), dynamic_ncols=True, leave=False, position=0, desc='Train')
 
                 for batch_idx, (data, target) in enumerate(train_loader):
-                    data = data.float().to(self.device)
-                    target = target.long().to(self.device)
 
+                    data = data.float().to(self.device)
+                    target = target.float().to(self.device)
+                    # data.cuda()
+                    # target.cuda()
                     # Don't be surprised - we just wrap these two lines to make it work for FP16
                     with torch.cuda.amp.autocast():
                         outputs = self.model(data)

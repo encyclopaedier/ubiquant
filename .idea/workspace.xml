@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fad62df4-c706-40da-a677-cdfd2038eb7f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Model/Models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Run.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_eval/init_train_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/train_eval/init_train_env.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model/Models.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/train_eval/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/train_eval/train.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -200,21 +197,6 @@
           <line>101</line>
           <option name="timeStamp" value="5" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/train_eval/train.py</url>
-          <line>33</line>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/train_eval/train.py</url>
-          <line>27</line>
-          <option name="timeStamp" value="9" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/train_eval/train.py</url>
-          <line>24</line>
-          <option name="timeStamp" value="10" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
@@ -246,6 +228,14 @@
         <watch expression="batch_idx" />
         <watch expression="init_training_env()" />
         <watch expression="self.librisample" language="Python" />
+        <watch expression="self.model" language="Python" />
+        <watch expression="outputs" />
+        <watch expression="target.device" language="Python" />
+        <watch expression="self.device" />
+        <watch expression="loss" language="Python" />
+        <watch expression="total_loss" />
+        <watch expression="target" />
+        <watch expression="total_length" />
       </configuration>
     </watches-manager>
   </component>

@@ -6,34 +6,17 @@ class Model(torch.nn.Module):
     def __init__(self, context=0):
         super(Model, self).__init__()
         # TODO: Please try different architectures
-        in_size = 13 * (context * 2 + 1)
+        in_size = 303 * (context * 2 + 1)
         layers = [
-            nn.Linear(in_size, 2048, bias=True),
-            nn.ReLU(),
-            nn.Dropout(p=0.2),
-            nn.BatchNorm1d(2048),
-            nn.Linear(2048, 2048, bias=True),
-            nn.ReLU(),
-            nn.Dropout(p=0.2),
-            nn.BatchNorm1d(2048),
-            nn.Linear(2048, 2048, bias=True),
-            nn.ReLU(),
-            nn.Dropout(p=0.2),
-            nn.BatchNorm1d(2048),
-            nn.Linear(2048, 2048, bias=True),
-            nn.ReLU(),
-            nn.Dropout(p=0.2),
-            nn.BatchNorm1d(2048),
-            nn.Linear(2048, 2048, bias=True),
-            ######################
-            nn.ReLU(),
-            nn.Dropout(p=0.2),
-            nn.BatchNorm1d(2048),
-            nn.Linear(2048, 2048, bias=True),
-            nn.ReLU(),
-            nn.Dropout(p=0.2),
-            nn.BatchNorm1d(2048),
-            nn.Linear(2048, 2048, bias=True)
+            # nn.Linear(in_size, 303, bias=True),
+            # nn.ReLU(),
+            # nn.Dropout(p=0.2),
+            # nn.BatchNorm1d(303),
+            # nn.Linear(303, 303, bias=True),
+            # nn.ReLU(),
+            # nn.Dropout(p=0.2),
+            # nn.BatchNorm1d(303),
+            nn.Linear(303, 1, bias=True)
 
         ]
         # layer2=[
