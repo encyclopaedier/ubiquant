@@ -30,7 +30,7 @@ class Train():
                 X, Y = self.librisample[i]
                 train_items = LibriItems(X, Y)
                 train_loader = torch.utils.data.DataLoader(train_items, batch_size=self.batch_size,
-                                                           shuffle=True)  # num_workers=1
+                                                           shuffle=True,num_workers=self.num_workers)  # num_workers=1
                 self.scheduler = optim.lr_scheduler.CosineAnnealingLR(self.optimizer,
                                                                       T_max=(len(train_loader) * self.epochs))
                 total_length+=len(train_loader)
