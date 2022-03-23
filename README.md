@@ -26,3 +26,10 @@ arg_parser从控制台读参数（暂时没用到），调用入口函数（main
 其中split_data文件夹是split过，处理好的training文件。暂时没有分validation集.
 
 放到config.config里的TRAINING_PATH即可。
+
+**调用kaggle全量数据**
+已集成在Dataloader/dataloader中，需在linux环境下使用。用例：
+
+若还未下载dataset：librisamples = LibriSamples(full_data=True, download=True)
+若数据集已存在：librisamples = LibriSamples(full_data=True, download=False)
+
