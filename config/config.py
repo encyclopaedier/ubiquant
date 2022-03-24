@@ -12,6 +12,8 @@ VALIDATION='validation'
 
 TRAINING_PATH=os.path.join(DATA_DIR,TRAINING)
 VALIDATION_PATH=os.path.join(DATA_DIR,VALIDATION)
+
+FULL_DATA_DIR = '~/kaggle_data'
 # =============================================================================
 # training config
 EPOCHS = 30
